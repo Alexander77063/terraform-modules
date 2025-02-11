@@ -15,12 +15,12 @@ output "environment" {
 
 # export the vpc id
 output "vpc_id" {
-  value = var.aws_vpc.vpc.id
+  value = var.aws_vpc.id
 }
 
 # export the internet gateway
 output "internet_gateway" {
-  value = var.aws_internet_gateway.internet_gateway
+  value = var.aws_internet_gateway.internet_gateway.id
 }
 
 # export the public subnet az1 id
