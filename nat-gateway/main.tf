@@ -1,24 +1,24 @@
 # allocate elastic ip. this eip will be used for the nat-gateway in the public subnet az1 
-resource "aws_eip" "eip1" {
+resource "aws_eip" "nat_eip_az1" {
   domain = "vpc"
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-eip1"
+    Name = "${var.project_name}-${var.environment}-nat-eip-az1"
   }
 }
 
 # allocate elastic ip. this eip will be used for the nat-gateway in the public subnet az2
-resource "aws_eip" "eip2" {
+resource "aws_eip" "nat_eip_az2" {
   domain = "vpc"
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-eip2"
+    Name = "${var.project_name}-${var.environment}-nat-eip-az2"
   }
 }
 
 # create nat gateway in public subnet az1
 resource "aws_nat_gateway" "nat_gateway_az1" {
-  allocation_id = aws_eip.eip2.id
+  allocation_id = aws_eip.nat_eip_az1.id
   subnet_id     = var.public_subnet_az1_id
 
   tags = {
@@ -32,7 +32,7 @@ resource "aws_nat_gateway" "nat_gateway_az1" {
 
 # create nat gateway in public subnet az2
 resource "aws_nat_gateway" "nat_gateway_az2" {
-  allocation_id = aws_eip.eip2.id
+  allocation_id = aws_eip.nat_eip_az2.id
   subnet_id     = var.public_subnet_az2_id
 
   tags = {
