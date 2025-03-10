@@ -1,84 +1,98 @@
+# Terraform Modules
 
-# Terraform Modules Repository
+[![GitHub license](https://img.shields.io/github/license/Alexander77063/terraform-modules)](https://github.com/Alexander77063/terraform-modules/blob/main/LICENSE)
+[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=flat&logo=terraform&logoColor=white)](https://www.terraform.io/)
+[![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 
-A collection of reusable Terraform modules for provisioning cloud infrastructure.
+A collection of reusable Terraform modules for AWS cloud infrastructure provisioning and management. These modules implement infrastructure as code best practices, enabling consistent, repeatable, and version-controlled deployments.
 
-## Modules Overview
+## Table of Contents
 
-### Available Modules
+- [Overview](#overview)
+- [Modules](#modules)
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
 
-| Module Name | Description | Documentation Link |
-|-------------|-------------|---------------------|
-| `vpc`       | Creates a VPC with subnets, NAT Gateway, and route tables | [VPC Module Docs](./modules/vpc/README.md) |
-| `ec2`       | Provisions EC2 instances with customizable configurations | [EC2 Module Docs](./modules/ec2/README.md) |
-| `rds`       | Sets up RDS instances with security best practices | [RDS Module Docs](./modules/rds/README.md) |
-| `security-group` | Configures security groups with common rule sets | [Security Group Docs](./modules/security-group/README.md) |
-| `s3`        | Creates S3 buckets with versioning and access controls | [S3 Module Docs](./modules/s3/README.md) |
+## Overview
 
-*(Replace the above module names and descriptions with your actual modules)*
+This repository contains modular, composable Terraform configurations encapsulating common infrastructure patterns used across AWS deployments. Each module is designed to be independent, reusable, and configurable using variables to accommodate different use cases and environments.
+
+The primary goals of these modules are:
+
+- **Standardization** - Enforce best practices and security standards across infrastructure
+- **Reusability** - Build once, use many times across projects
+- **Maintainability** - Centralized changes and updates to infrastructure patterns
+- **Simplification** - Abstract complex infrastructure into easy-to-use modules
+
+## Modules
+
+| Module Name | Description | Documentation |
+|-------------|-------------|---------------|
+| `networking` | Creates VPC, subnets, route tables, NACLs, and other networking components | [Documentation](./networking/README.md) |
+| `compute` | Provisions EC2 instances with standardized configurations | [Documentation](./compute/README.md) |
+| `security` | Manages security groups, IAM policies and roles | [Documentation](./security/README.md) |
+| `storage` | Creates and configures S3 buckets with proper encryption and access policies | [Documentation](./storage/README.md) |
+| `database` | Sets up RDS instances with proper configuration and backup policies | [Documentation](./database/README.md) |
+| `lambda` | Deploys Lambda functions with proper IAM permissions | [Documentation](./lambda/README.md) |
+| `monitoring` | Configures CloudWatch alarms, dashboards, and logging | [Documentation](./monitoring/README.md) |
+
+## Requirements
+
+- Terraform >= 1.0.0
+- AWS Provider >= 4.0
+- AWS CLI configured with appropriate credentials
+- Git for version control
 
 ## Usage
 
-### Prerequisites
-- Terraform v1.0+
-- AWS CLI configured with proper credentials
-- Git for version control
+To use these modules in your Terraform configurations, reference them using the GitHub source:
 
-### How to Use These Modules
+```hcl
+module "vpc" {
+  source = "github.com/Alexander77063/terraform-modules//networking/vpc?ref=v1.0.0"
+  
+  # Module specific variables
+  vpc_name        = "production-vpc"
+  vpc_cidr        = "10.0.0.0/16"
+  azs             = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  
+  # Additional parameters as needed
+  enable_nat_gateway = true
+  single_nat_gateway = false
+  
+  tags = {
+    Environment = "production"
+    Terraform   = "true"
+  }
+}
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Alexander77063/terraform-modules.git
-   ```
+Always pin to a specific version using the `?ref=VERSION` parameter to ensure your infrastructure remains stable.
 
-2. In your Terraform configuration:
-   ```hcl
-   module "example_vpc" {
-     source = "./modules/vpc"
-     
-     vpc_cidr = "10.0.0.0/16"
-     public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
-     private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
-   }
-   ```
+## Examples
 
-## Module Documentation Details
+The `examples` directory contains complete, working examples demonstrating how to use these modules in different scenarios:
 
-Each module contains detailed documentation in its respective README file:
+- [Basic VPC Setup](./examples/basic-vpc/README.md)
+- [Three-Tier Web Application](./examples/three-tier-app/README.md)
+- [Serverless Application](./examples/serverless-app/README.md)
+- [Multi-Account Infrastructure](./examples/multi-account/README.md)
 
-### VPC Module
-- [Input Variables](./modules/vpc/variables.tf)
-- [Output Values](./modules/vpc/outputs.tf)
-- [Resource Definitions](./modules/vpc/main.tf)
+Each example includes:
+- Ready-to-use Terraform configurations
+- A README with detailed explanations
+- Variables file templates
 
-### EC2 Module
-- [Input Variables](./modules/ec2/variables.tf)
-- [Output Values](./modules/ec2/outputs.tf)
-- [Resource Definitions](./modules/ec2/main.tf)
+To run an example:
 
-### RDS Module
-- [Input Variables](./modules/rds/variables.tf)
-- [Output Values](./modules/rds/outputs.tf)
-- [Resource Definitions](./modules/rds/main.tf)
-
-*(Repeat this pattern for all your modules)*
-
-## Example Implementations
-
-See complete usage examples in the [examples](./examples/) directory:
-- [Basic Web Application](./examples/web-app/)
-- [Multi-tier Architecture](./examples/multi-tier/)
-- [Serverless Setup](./examples/serverless/)
-## License
-
-[Apache License 2.0](./LICENSE)
-
-To customize this template:
-1. Update the module names and descriptions to match your actual modules
-2. Verify the file paths match your repository structure
-3. Add/remove modules as needed
-4. Update the example implementations section with your actual examples
-5. Add any module-specific requirements or notes
-6. Include any important security considerations
-7. Add CI/CD badges if applicable
-8. Include Terraform registry information if published
+```bash
+cd examples/basic-vpc
+terraform init
+terraform plan
+terraform apply
+```
